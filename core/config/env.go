@@ -14,7 +14,7 @@ var once sync.Once
 // GetEnv: actual env fetching logic
 func GetEnv(key string) string {
 	// set the real environment from .env file ONLY ONCE
-	once.Do(initEnv)
+	once.Do(InitEnv)
 
 	envValue, isExists := os.LookupEnv(key)
 	if !isExists {
@@ -27,7 +27,7 @@ func GetEnv(key string) string {
 }
 
 // loads environment variable if not in production
-func initEnv() {
+func InitEnv() {
 	envValue, isExists := os.LookupEnv("APP_ENV")
 
 	if !isExists {
