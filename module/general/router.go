@@ -5,6 +5,7 @@ import (
 )
 
 func SetupRoutes(r fiber.Router) {
-	r.Get("/", test)
-	r.Post("/", testWithPayload)
+	r.Get("", test)
+	r.Post("", testWithPayload)
+	r.Get("user-dummy", createUser)
 }

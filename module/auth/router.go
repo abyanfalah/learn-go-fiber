@@ -2,8 +2,9 @@ package auth
 
 import "github.com/gofiber/fiber/v2"
 
-func router(app *fiber.App) {
-	api := app.Group("/auth")
+func SetupRoutes(r fiber.Router) {
+	api := r.Group("auth")
 
-	api.Get("/login", login)
+	api.Post("login", login)
+	api.Post("register", register)
 }

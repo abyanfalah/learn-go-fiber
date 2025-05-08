@@ -32,7 +32,7 @@ func InitEnv() {
 
 	if !isExists {
 		fmt.Println("Warning: APP_ENV is not initally set.")
-		// return
+		os.Setenv("APP_ENV", "dev")
 	}
 
 	switch strings.ToLower(strings.TrimSpace(envValue)) {
@@ -42,41 +42,6 @@ func InitEnv() {
 
 	loadDotEnv(".env")
 }
-
-// func loadAppEnv(){
-// 	file, err := os.Open(".env")
-// 	if err != nil {
-// 		log.Printf("Warning: could not open .env file (%s): %v", ".env", err.Error)
-// 		return
-// 	}
-// 	defer file.Close()
-
-// 	scanner := bufio.NewScanner(file)
-// 	for scanner.Scan() {
-// 		line := scanner.Text()
-
-// 		// commented checking
-// 		if strings.HasPrefix(line, "#") || strings.TrimSpace(line) == "" {
-// 			continue
-// 		}
-
-// 		// less than 2 parts checking
-// 		parts := strings.SplitN(line, "=", 2)
-// 		if (len(parts)) != 2 {
-// 			continue
-// 		}
-
-// 		// setting each env
-// 		key := strings.TrimSpace(parts[0])
-// 		value := strings.Trim(strings.TrimSpace(parts[1]), `"'`)
-// 		fmt.Println("setting " + key + " : " + value)
-// 		os.Setenv(key, value)
-
-// 		if err := scanner.Err(); err != nil {
-// 			log.Fatalf("Error reading .env file: %v", err)
-// 		}
-// 	}
-// }
 
 // loading environment variable from .env file
 func loadDotEnv(path string) {

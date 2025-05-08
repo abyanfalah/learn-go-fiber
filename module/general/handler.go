@@ -1,7 +1,11 @@
 package general
 
 import (
+	"learn-fiber/core/config/database"
+	"learn-fiber/core/helper/generator"
 	"learn-fiber/core/http/response"
+	"learn-fiber/model"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -12,6 +16,12 @@ type orang struct {
 }
 
 func test(c *fiber.Ctx) error {
+	// return fiber.ErrBadGateway
+
+	if true {
+		panic("fuck")
+	}
+
 	return response.Success(c)
 }
 
@@ -21,4 +31,21 @@ func testWithPayload(c *fiber.Ctx) error {
 	o.Name = "ohang"
 
 	return response.Body(c, o)
+}
+
+func createUser(c *fiber.Ctx) error {
+
+	id := generator.GenerateId()
+	name := strconv.Itoa(int(id))
+	email := name + "@gmail.com"
+
+	u := model.User{}
+	u.ID = id
+	u.Name = name
+	u.Email = email
+	u.Password = name
+
+	database.DB.Save(&u)
+
+	return response.Success(c)
 }

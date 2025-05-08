@@ -1,8 +1,53 @@
 package database
 
-func connect() {
+import (
+	"database/sql"
+	"fmt"
+	"learn-fiber/core/config"
+	"log"
+	"strconv"
 
-	// dsn := "host=localhost user=postgres password=postgres dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
-	// db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+)
 
+var DB *gorm.DB
+
+// Connect connect to db
+func Connect() (*gorm.DB, *sql.DB) {
+
+	// get port integer
+	port, err := strconv.Atoi(config.GetEnv("DB_PORT"))
+	if err != nil {
+		panic("Failed to parse database port")
+	}
+
+	dsn := fmt.Sprintf(
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		config.GetEnv("DB_HOST"),
+		port,
+		config.GetEnv("DB_USER"),
+		config.GetEnv("DB_PASSWORD"),
+		config.GetEnv("DB_DATABASE"),
+	)
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	DB = db
+
+	sqlDb, err := db.DB()
+	if err != nil {
+		log.Fatalf("Failed to get raw DB from GORM: %v", err)
+	}
+
+	fmt.Println("DB Connection opened")
+	return db, sqlDb
+}
+
+func InitDb() *gorm.DB {
+	db, _ := Connect()
+	return db
 }
