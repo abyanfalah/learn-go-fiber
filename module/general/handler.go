@@ -16,12 +16,10 @@ type orang struct {
 }
 
 func test(c *fiber.Ctx) error {
-	// return fiber.ErrBadGateway
+	return response.Success(c)
+}
 
-	if true {
-		panic("fuck")
-	}
-
+func testProtected(c *fiber.Ctx) error {
 	return response.Success(c)
 }
 

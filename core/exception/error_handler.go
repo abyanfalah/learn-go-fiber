@@ -11,7 +11,7 @@ var (
 	ErrBadCredentials = fiber.NewError(fiber.StatusBadRequest, "bad credentials")
 )
 
-// Handle i wish i can catch an exception in the sky
+// Handle i wish i can catch an exception from the sky
 func Handle(e error) *fiber.Error {
 	if e == nil {
 		return nil
@@ -24,6 +24,7 @@ func Handle(e error) *fiber.Error {
 	default:
 		return fiber.NewError(fiber.StatusInternalServerError, "INTERNAL SERVER ERROR: "+e.Error())
 	}
+
 }
 
 func BadCredentials(e error) *fiber.Error {

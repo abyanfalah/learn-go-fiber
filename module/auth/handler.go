@@ -1,7 +1,9 @@
 package auth
 
 import (
+	"learn-fiber/core/authutil"
 	"learn-fiber/core/config/database"
+	"learn-fiber/core/exception"
 	"learn-fiber/core/helper"
 	"learn-fiber/core/helper/generator"
 	"learn-fiber/core/http/response"
@@ -16,6 +18,11 @@ func login(c *fiber.Ctx) error {
 	user, err := findUserByEmailAndPassword(req)
 	if err != nil {
 		return fiber.DefaultErrorHandler(c, err)
+	}
+
+	err = authutil.SetCookie(c, user)
+	if err != nil {
+		return exception.Handle(err)
 	}
 
 	return response.Body(c, user)
@@ -34,5 +41,10 @@ func register(c *fiber.Ctx) error {
 	u.Password = req.Password
 
 	database.DB.Save(u)
+	return response.Success(c)
+}
+
+func logout(c *fiber.Ctx) error {
+	authutil.ClearCookie(c)
 	return response.Success(c)
 }

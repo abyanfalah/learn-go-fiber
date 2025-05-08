@@ -1,6 +1,8 @@
 package generator
 
-import "time"
+import (
+	"time"
+)
 
 func GenerateId() uint {
 	return uint(time.Now().Unix())

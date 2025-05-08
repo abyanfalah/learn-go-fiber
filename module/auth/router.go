@@ -7,4 +7,5 @@ func SetupRoutes(r fiber.Router) {
 
 	api.Post("login", login)
 	api.Post("register", register)
+	api.Post("logout", logout)
 }
