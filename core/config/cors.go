@@ -15,7 +15,6 @@ func CorsConfig() cors.Config {
 
 	return cors.Config{
 		AllowOrigins: allowedOrigins,
-		// AllowOrigins: "http://www.google.com",
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}
 }

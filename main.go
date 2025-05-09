@@ -9,18 +9,22 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func main() {
 	// defer database.DB.clo
 
-	app := fiber.New(fiber.Config{
-		CaseSensitive: true,
-		StrictRouting: true,
-		ServerHeader:  "asdf",
-		AppName:       "asdf",
-		// ErrorHandler:  core.ErrorHandler,
-	})
+	// app := fiber.New(fiber.Config{
+	// 	CaseSensitive: true,
+	// 	StrictRouting: true,
+	// 	ServerHeader:  "asdf",
+	// 	AppName:       "asdf",
+	// 	// ErrorHandler:  core.ErrorHandler,
+	// })
+
+	app := fiber.New()
+	app.Use(logger.New())
 
 	database.Connect()
 	database.InitMigration(database.DB)
@@ -31,7 +35,6 @@ func main() {
 	app.Use(authutil.JwtConfig())
 
 	// app.Use(recover.New())
-	// app.Use(logger.New())
 
 	log.Fatal(app.Listen(":3000"))
 }
