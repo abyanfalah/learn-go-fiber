@@ -7,6 +7,7 @@ import (
 	"learn-fiber/core/exception"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -18,7 +19,6 @@ var isWhiteListedPath = map[string]bool{
 }
 
 func AuthCookieMiddleware() fiber.Handler {
-
 	// hehe
 	return logic
 }
@@ -30,16 +30,17 @@ func logic(c *fiber.Ctx) error {
 
 	token, err := parseJWTFromCookie(c, config.GetEnv("JWT_SECRET"))
 	if err != nil {
-		fmt.Println(err.Error())
-		return exception.Unauthorized("token parsing failed")
+		log.Error(err.Error())
+		return exception.ErrUnauthorized
 	}
 
 	claims, err := validateToken(token)
 	if err != nil {
-		fmt.Println(err.Error())
-		return exception.Unauthorized("token validation failed")
+		log.Error(err.Error())
+		return exception.ErrUnauthorized
 	}
 
+	// dont know this yet
 	c.Locals("user", claims) // or token if you want raw access
 	return c.Next()
 }
@@ -55,9 +56,6 @@ func parseJWTFromCookie(c *fiber.Ctx, secret string) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-
-		fmt.Println("secret -> " + secret)
-
 		return []byte(secret), nil
 	})
 }
