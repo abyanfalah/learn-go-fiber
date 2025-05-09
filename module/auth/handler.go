@@ -45,6 +45,9 @@ func register(c *fiber.Ctx) error {
 }
 
 func logout(c *fiber.Ctx) error {
-	authutil.ClearCookie(c)
+	err := authutil.ClearCookie(c)
+	if err != nil {
+		return exception.Handle(err)
+	}
 	return response.Success(c)
 }

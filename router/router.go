@@ -10,7 +10,7 @@ import (
 )
 
 func SetupRouters(app *fiber.App) {
-	api := app.Group("api", mdw.JwtAuth)
+	api := app.Group("api", mdw.AuthCookieMiddleware())
 	// api := app.Group("api")
 
 	general.SetupRoutes(api)

@@ -1,9 +1,11 @@
 package authutil
 
 import (
+	"learn-fiber/core/config"
 	"learn-fiber/model"
 	"time"
 
+	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -20,8 +22,6 @@ func SetCookie(c *fiber.Ctx, user *model.User) error {
 	cookie.Name = "auth_token"
 	cookie.Value = token
 	cookie.Expires = time.Now().Add(1 * time.Hour)
-	// cookie.Expires = time.Now().Add(5 * time.Second)
-	// cookie.Expires = time.Now().Add(1 * time.Minute)
 	cookie.Secure = isCookieSecure
 	cookie.HTTPOnly = true
 
@@ -52,10 +52,16 @@ func createJwt(user *model.User) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	signedToken, err := token.SignedString([]byte("kunyuk444"))
+	signedToken, err := token.SignedString([]byte(config.GetEnv("JWT_SECRET")))
 	if err != nil {
 		return "", err
 	}
 
 	return signedToken, nil
+}
+
+func JwtConfig() fiber.Handler {
+	return jwtware.New(jwtware.Config{
+		SigningKey: jwtware.SigningKey{Key: []byte(config.GetEnv("JWT_SECRET"))},
+	})
 }

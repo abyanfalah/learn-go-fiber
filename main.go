@@ -1,11 +1,13 @@
 package main
 
 import (
+	"learn-fiber/core/authutil"
 	"learn-fiber/core/config/database"
 	"learn-fiber/router"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
@@ -26,6 +28,9 @@ func main() {
 	router.SetupRouters(app)
 
 	app.Use(recover.New())
+	app.Use(cors.New())
+	app.Use(authutil.JwtConfig())
+
 	// app.Use(logger.New(logger.Config{
 	// 	Format: "[${ip}]:${port} ${status} - ${method} ${path}\n",
 	// }))

@@ -1,26 +1,80 @@
 package mdw
 
 import (
+	"errors"
+	"fmt"
+	"learn-fiber/core/config"
+	"learn-fiber/core/exception"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 var isWhiteListedPath = map[string]bool{
+	"/":                  true,
+	"/api":               true,
 	"/api/auth/login":    true,
 	"/api/auth/register": true,
 }
 
-func JwtAuth(c *fiber.Ctx) error {
+func AuthCookieMiddleware() fiber.Handler {
+
+	// hehe
+	return logic
+}
+
+func logic(c *fiber.Ctx) error {
 	if isWhiteListedPath[c.Path()] {
 		return c.Next()
 	}
 
-	// fmt.Println(c.coo
+	token, err := parseJWTFromCookie(c, config.GetEnv("JWT_SECRET"))
+	if err != nil {
+		fmt.Println(err.Error())
+		return exception.Unauthorized("token parsing failed")
+	}
 
-	// user := c.Locals("user").(*jwt.Token)
-	// claims := user.Claims.(jwt.MapClaims)
-	// name := claims["name"].(string)
+	claims, err := validateToken(token)
+	if err != nil {
+		fmt.Println(err.Error())
+		return exception.Unauthorized("token validation failed")
+	}
 
-	// fmt.Println("you are: " + name)
-
+	c.Locals("user", claims) // or token if you want raw access
 	return c.Next()
+}
+
+func parseJWTFromCookie(c *fiber.Ctx, secret string) (*jwt.Token, error) {
+	tokenString := c.Cookies("auth_token")
+	fmt.Println("token -> " + tokenString)
+	if tokenString == "" {
+		return nil, errors.New("missing token")
+	}
+
+	return jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+
+		fmt.Println("secret -> " + secret)
+
+		return []byte(secret), nil
+	})
+}
+
+func validateToken(token *jwt.Token) (jwt.MapClaims, error) {
+	if !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, errors.New("cannot parse claims")
+	}
+
+	fmt.Println("token is valid")
+	fmt.Println("claims: ")
+	fmt.Println(claims)
+
+	return claims, nil
 }
