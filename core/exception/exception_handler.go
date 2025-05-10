@@ -7,6 +7,10 @@ import (
 	"gorm.io/gorm"
 )
 
+// func Handler(c *fiber.Ctx, err error) error {
+// 	return Handle(err)
+// }
+
 func Handle(e error) *fiber.Error {
 	if e == nil {
 		return nil

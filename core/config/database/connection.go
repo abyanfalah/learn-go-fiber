@@ -1,7 +1,6 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 	"learn-fiber/core/config"
 	"log"
@@ -13,10 +12,7 @@ import (
 
 var DB *gorm.DB
 
-// Connect connect to db
-func Connect() (*gorm.DB, *sql.DB) {
-
-	// get port integer
+func init() {
 	port, err := strconv.Atoi(config.GetEnv("DB_PORT"))
 	if err != nil {
 		panic("Failed to parse database port")
@@ -34,20 +30,16 @@ func Connect() (*gorm.DB, *sql.DB) {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
+		return
 	}
 
 	DB = db
-
-	sqlDb, err := db.DB()
-	if err != nil {
-		log.Fatalf("Failed to get raw DB from GORM: %v", err)
-	}
-
 	fmt.Println("DB Connection opened")
-	return db, sqlDb
-}
 
-func InitDb() *gorm.DB {
-	db, _ := Connect()
-	return db
+	// _, err := db.DB()
+	// if err != nil {
+	// 	log.Fatalf("Failed to get raw DB from GORM: %v", err)
+	// }
+
+	// return db, sqlDb
 }

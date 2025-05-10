@@ -25,9 +25,9 @@ func logError(e error) {
 	}
 
 	msg := e
-	caller, location := getCallerAndLocation(callerPositionSkip)
+	_, location := getCallerAndLocation(callerPositionSkip)
 	log.Printf(`"%s"`, msg)
-	fmt.Printf("%-14s: %s\n", "Caller", caller)
+	// fmt.Printf("%-14s: %s\n", "Caller", caller)
 	fmt.Printf("%-14s: %s\n", "Location", location)
 	fmt.Printf("%-14s: %s\n", "Message", msg)
 	fmt.Printf("%-14s:\n", "Stacktrace")

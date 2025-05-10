@@ -31,7 +31,7 @@ func SetCookie(c *fiber.Ctx, user *model.User) error {
 }
 
 // c.clearCookie() is not working. might figure out later
-func ClearCookie(c *fiber.Ctx) error {
+func ClearCookie(c *fiber.Ctx) {
 	cookie := new(fiber.Cookie)
 	cookie.Name = config.GetEnv("COOKIE_NAME")
 	cookie.Value = ""
@@ -40,7 +40,6 @@ func ClearCookie(c *fiber.Ctx) error {
 	cookie.HTTPOnly = true
 
 	c.Cookie(cookie)
-	return nil
 }
 
 func createJwt(user *model.User) (string, error) {
