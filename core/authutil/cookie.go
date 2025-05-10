@@ -19,7 +19,7 @@ func SetCookie(c *fiber.Ctx, user *model.User) error {
 	}
 
 	cookie := new(fiber.Cookie)
-	cookie.Name = "auth_token"
+	cookie.Name = config.GetEnv("COOKIE_NAME")
 	cookie.Value = token
 	cookie.Expires = time.Now().Add(1 * time.Hour)
 	cookie.Secure = isCookieSecure
@@ -33,7 +33,7 @@ func SetCookie(c *fiber.Ctx, user *model.User) error {
 // c.clearCookie() is not working. might figure out later
 func ClearCookie(c *fiber.Ctx) error {
 	cookie := new(fiber.Cookie)
-	cookie.Name = "auth_token"
+	cookie.Name = config.GetEnv("COOKIE_NAME")
 	cookie.Value = ""
 	cookie.Expires = time.Now().Add(-1 * time.Second)
 	cookie.Secure = isCookieSecure

@@ -1,7 +1,9 @@
 package general
 
 import (
+	"errors"
 	"learn-fiber/core/config/database"
+	"learn-fiber/core/exception"
 	"learn-fiber/core/helper/generator"
 	"learn-fiber/core/http/response"
 	"learn-fiber/model"
@@ -16,7 +18,8 @@ type orang struct {
 }
 
 func test(c *fiber.Ctx) error {
-	return response.Success(c)
+	err := errors.New("asdf")
+	return exception.Handle(err)
 }
 
 func testProtected(c *fiber.Ctx) error {

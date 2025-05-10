@@ -46,7 +46,7 @@ func logic(c *fiber.Ctx) error {
 }
 
 func parseJWTFromCookie(c *fiber.Ctx, secret string) (*jwt.Token, error) {
-	tokenString := c.Cookies("auth_token")
+	tokenString := c.Cookies(config.GetEnv("COOKIE_NAME"))
 	fmt.Println("token -> " + tokenString)
 	if tokenString == "" {
 		return nil, errors.New("missing token")
