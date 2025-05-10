@@ -5,9 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"learn-fiber/core/config"
+	"log"
 	"runtime"
 	"runtime/debug"
 )
+
+var callerPositionSkip = 3
 
 type StackError struct {
 	Err   error
@@ -21,18 +24,20 @@ func logError(e error) {
 		_ = errors.As(e, &se)
 	}
 
-	printCaller(2)
-	fmt.Println(se.Err)
+	msg := e
+	caller, location := getCallerAndLocation(callerPositionSkip)
+	log.Printf(`"%s"`, msg)
+	fmt.Printf("%-14s: %s\n", "Caller", caller)
+	fmt.Printf("%-14s: %s\n", "Location", location)
+	fmt.Printf("%-14s: %s\n", "Message", msg)
+	fmt.Printf("%-14s:\n", "Stacktrace")
 	printRelevantStack(se.Stack)
+	fmt.Println()
 }
 
 func (e *StackError) Error() string {
 	return e.Err.Error()
 }
-
-// func (e *StackError) Unwrap() error {
-// 	return e.Err
-// }
 
 func newStackError(err error) error {
 	return &StackError{
@@ -51,18 +56,26 @@ func printRelevantStack(stack []byte) {
 		line := lines[i]
 		next := lines[i+1]
 
-		if bytes.Contains(next, config.ProjectRoot) {
+		if isRelevantStacktrace(next) {
 			fmt.Printf("%s\n%s\n", line, next)
 		}
 	}
 }
 
-func printCaller(skip int) {
+func getCallerAndLocation(skip int) (string, string) {
 	pc, file, line, ok := runtime.Caller(skip)
 	if !ok {
 		fmt.Println("Caller info: unknown")
-		return
+		return "unknown", "unknown"
 	}
 	fn := runtime.FuncForPC(pc)
-	fmt.Printf("Caller: %s:%d\nLocation: %s:%d\n", fn.Name(), line, file, line)
+	caller := fmt.Sprintf("%s:%d", file, line)
+	location := fmt.Sprintf("%s:%d", fn.Name(), line)
+
+	return caller, location
+}
+
+func isRelevantStacktrace(path []byte) bool {
+	isRelevant := bytes.Contains(path, config.ProjectRoot) && !bytes.Contains(path, config.ErrorLoggingPath)
+	return isRelevant
 }
