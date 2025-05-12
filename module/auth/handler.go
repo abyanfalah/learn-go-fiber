@@ -7,6 +7,7 @@ import (
 	"learn-fiber/core/helper"
 	"learn-fiber/core/helper/generator"
 	"learn-fiber/core/http/response"
+	baseresponse "learn-fiber/http/base_response"
 	"learn-fiber/model"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,12 +21,19 @@ func login(c *fiber.Ctx) error {
 		return fiber.DefaultErrorHandler(c, err)
 	}
 
-	err = authutil.SetCookie(c, user)
+	token, err := authutil.SetCookie(c, user)
 	if err != nil {
 		return exception.Handle(err)
 	}
 
-	return response.Body(c, user)
+	r := baseresponse.AuthResponse{
+		AccessToken: token,
+		ID:          user.ID,
+		Email:       user.Email,
+		Name:        user.Name,
+	}
+
+	return response.Body(c, r)
 }
 
 func register(c *fiber.Ctx) error {

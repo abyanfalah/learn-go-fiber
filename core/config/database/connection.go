@@ -27,19 +27,11 @@ func init() {
 		config.GetEnv("DB_DATABASE"),
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 		return
 	}
 
-	DB = db
 	fmt.Println("DB Connection opened")
-
-	// _, err := db.DB()
-	// if err != nil {
-	// 	log.Fatalf("Failed to get raw DB from GORM: %v", err)
-	// }
-
-	// return db, sqlDb
 }

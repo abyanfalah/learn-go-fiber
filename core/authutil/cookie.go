@@ -12,10 +12,10 @@ import (
 
 var isCookieSecure = false
 
-func SetCookie(c *fiber.Ctx, user *model.User) error {
+func SetCookie(c *fiber.Ctx, user *model.User) (string, error) {
 	token, err := createJwt(user)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	cookie := new(fiber.Cookie)
@@ -27,7 +27,7 @@ func SetCookie(c *fiber.Ctx, user *model.User) error {
 
 	c.Cookie(cookie)
 
-	return nil
+	return token, nil
 }
 
 // c.clearCookie() is not working. might figure out later

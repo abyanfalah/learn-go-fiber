@@ -41,7 +41,7 @@ func logic(c *fiber.Ctx) error {
 	}
 
 	// dont know this yet
-	c.Locals("user", claims) // or token if you want raw access
+	c.Locals("user", claims)
 	return c.Next()
 }
 

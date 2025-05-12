@@ -22,7 +22,7 @@ func test(c *fiber.Ctx) error {
 }
 
 func testProtected(c *fiber.Ctx) error {
-	return response.Success(c)
+	return c.JSON(c.Locals("user"))
 }
 
 func testWithPayload(c *fiber.Ctx) error {
