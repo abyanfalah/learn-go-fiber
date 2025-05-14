@@ -1,8 +1,7 @@
 package general
 
 import (
-	"errors"
-	"learn-fiber/core/config/database"
+	"learn-fiber/core/config/db"
 	"learn-fiber/core/helper/generator"
 	"learn-fiber/core/http/response"
 	"learn-fiber/model"
@@ -17,8 +16,7 @@ type orang struct {
 }
 
 func test(c *fiber.Ctx) error {
-	err := errors.New("asdf")
-	return err
+	return response.Body(c, "ok")
 }
 
 func testProtected(c *fiber.Ctx) error {
@@ -45,7 +43,7 @@ func createUser(c *fiber.Ctx) error {
 	u.Email = email
 	u.Password = name
 
-	database.DB.Save(&u)
+	db.Use().Save(&u)
 
 	return response.Success(c)
 }

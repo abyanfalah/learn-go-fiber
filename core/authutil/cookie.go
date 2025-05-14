@@ -5,9 +5,7 @@ import (
 	"learn-fiber/model"
 	"time"
 
-	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 var isCookieSecure = false
@@ -40,27 +38,4 @@ func ClearCookie(c *fiber.Ctx) {
 	cookie.HTTPOnly = true
 
 	c.Cookie(cookie)
-}
-
-func createJwt(user *model.User) (string, error) {
-	claims := jwt.MapClaims{
-		"ID":    user.ID,
-		"admin": true,
-		"exp":   time.Now().Add(time.Hour * 1).Unix(),
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	signedToken, err := token.SignedString([]byte(config.GetEnv("JWT_SECRET")))
-	if err != nil {
-		return "", err
-	}
-
-	return signedToken, nil
-}
-
-func JwtConfig() fiber.Handler {
-	return jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: []byte(config.GetEnv("JWT_SECRET"))},
-	})
 }

@@ -1,15 +1,16 @@
 package user
 
 import (
-	"learn-fiber/core/config/database"
+	"learn-fiber/core/config/db"
 	"learn-fiber/model"
+	"learn-fiber/module/auth"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func isUsedEmail(email string) error {
+func IsUsedEmail(email string) error {
 	var isExists bool
-	err := database.DB.Model(&model.User{}).
+	err := db.Use().Model(&model.User{}).
 		Select("count(*) > 0").
 		Where("email = ?", email).
 		Find(&isExists).Error
@@ -21,6 +22,8 @@ func isUsedEmail(email string) error {
 	if isExists {
 		return fiber.NewError(fiber.StatusBadRequest, "email is used")
 	}
+
+	auth.Hehe()
 
 	return nil
 }

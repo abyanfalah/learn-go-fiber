@@ -3,6 +3,7 @@ package mdw
 import (
 	"errors"
 	"fmt"
+	"learn-fiber/core/authutil"
 	"learn-fiber/core/config"
 	"learn-fiber/core/exception"
 
@@ -19,7 +20,6 @@ var isWhiteListedPath = map[string]bool{
 }
 
 func AuthCookieMiddleware() fiber.Handler {
-	// hehe
 	return logic
 }
 
@@ -34,20 +34,34 @@ func logic(c *fiber.Ctx) error {
 		return exception.ErrUnauthorized
 	}
 
+	if token == nil {
+		log.Error("missing token")
+		return exception.ErrInvalidToken
+	}
+
+	isBlacklisted, err := authutil.IsBlacklistedToken(token.Raw)
+	if err != nil {
+		log.Error(err.Error())
+		return exception.Handle(err)
+	}
+
+	if isBlacklisted {
+		log.Error("token is blacklisted")
+		return exception.Unauthorized("token is blacklisted")
+	}
+
 	claims, err := validateToken(token)
 	if err != nil {
 		log.Error(err.Error())
 		return exception.ErrUnauthorized
 	}
 
-	// dont know this yet
 	c.Locals("user", claims)
 	return c.Next()
 }
 
 func parseJWTFromCookie(c *fiber.Ctx, secret string) (*jwt.Token, error) {
 	tokenString := c.Cookies(config.GetEnv("COOKIE_NAME"))
-	fmt.Println("token -> " + tokenString)
 	if tokenString == "" {
 		return nil, errors.New("missing token")
 	}
@@ -70,7 +84,6 @@ func validateToken(token *jwt.Token) (jwt.MapClaims, error) {
 		return nil, errors.New("cannot parse claims")
 	}
 
-	fmt.Println("token is valid")
 	fmt.Println("claims: ")
 	fmt.Println(claims)
 

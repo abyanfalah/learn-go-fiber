@@ -1,7 +1,7 @@
 package user
 
 import (
-	"learn-fiber/core/config/database"
+	"learn-fiber/core/config/db"
 	"learn-fiber/core/helper"
 	"learn-fiber/core/http/response"
 	"learn-fiber/model"
@@ -11,7 +11,7 @@ import (
 
 func getAll(c *fiber.Ctx) error {
 	var users []model.User
-	database.DB.Find(&users)
+	db.Use().Find(&users)
 
 	return response.Body(c, users)
 }
@@ -22,7 +22,7 @@ func create(c *fiber.Ctx) error {
 		return fiber.DefaultErrorHandler(c, err)
 	}
 
-	err = isUsedEmail(req.Email)
+	err = IsUsedEmail(req.Email)
 	if err != nil {
 		return fiber.DefaultErrorHandler(c, err)
 	}
@@ -37,7 +37,7 @@ func create(c *fiber.Ctx) error {
 		Email:    req.Email,
 		Password: hashedPassword,
 	}
-	database.DB.Save(&u)
+	db.Use().Save(&u)
 
 	return response.Success(c)
 }
@@ -51,13 +51,13 @@ func update(c *fiber.Ctx) error {
 	var id int = helper.ToInt(c.Params("id"))
 	var user model.User
 
-	result := database.DB.First(&user, id)
+	result := db.Use().First(&user, id)
 	if result.Error != nil {
 		return result.Error
 	}
 
 	if user.Email != req.Email {
-		err = isUsedEmail(req.Email)
+		err = IsUsedEmail(req.Email)
 		if err != nil {
 			return fiber.DefaultErrorHandler(c, err)
 		}
@@ -67,7 +67,7 @@ func update(c *fiber.Ctx) error {
 	user.Email = req.Email
 	user.Password = req.Password
 
-	database.DB.Save(&user)
+	db.Use().Save(&user)
 	return response.Body(c, user)
 }
 
@@ -75,11 +75,11 @@ func delete(c *fiber.Ctx) error {
 	var id int = helper.ToInt(c.Params("id"))
 	var user model.User
 
-	result := database.DB.First(&user, id)
+	result := db.Use().First(&user, id)
 	if result.Error != nil {
 		return result.Error
 	}
 
-	database.DB.Delete(&user)
+	db.Use().Delete(&user)
 	return response.Success(c)
 }

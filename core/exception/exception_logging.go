@@ -47,10 +47,6 @@ func newStackError(err error) error {
 }
 
 func printRelevantStack(stack []byte) {
-	if config.ProjectRoot == nil {
-		return
-	}
-
 	lines := bytes.Split(stack, []byte("\n"))
 	for i := range len(lines) - 1 {
 		line := lines[i]
@@ -76,6 +72,6 @@ func getCallerAndLocation(skip int) (string, string) {
 }
 
 func isRelevantStacktrace(path []byte) bool {
-	isRelevant := bytes.Contains(path, config.ProjectRoot) && !bytes.Contains(path, config.ErrorLoggingPath)
+	isRelevant := bytes.Contains(path, config.GetProjectRoot()) && !bytes.Contains(path, config.GetErrorLoggingPath())
 	return isRelevant
 }
