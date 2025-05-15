@@ -2,7 +2,6 @@ package mdw
 
 import (
 	"errors"
-	"fmt"
 	"learn-fiber/core/authutil"
 	"learn-fiber/core/config"
 	"learn-fiber/core/exception"
@@ -83,9 +82,5 @@ func validateToken(token *jwt.Token) (jwt.MapClaims, error) {
 	if !ok {
 		return nil, errors.New("cannot parse claims")
 	}
-
-	fmt.Println("claims: ")
-	fmt.Println(claims)
-
 	return claims, nil
 }

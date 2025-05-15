@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"learn-fiber/core/authutil"
 	"learn-fiber/core/exception"
 	"learn-fiber/core/helper"
@@ -14,7 +15,11 @@ import (
 )
 
 func login(c *fiber.Ctx) error {
-	req, _ := helper.ParseAndValidate[loginRequest](c)
+	fmt.Println("login")
+	req, ev := helper.ParseAndValidate[loginRequest](c)
+	if ev != nil {
+		return response.ErrorValidation(c, ev)
+	}
 
 	user, err := findUserByEmailAndPassword(req)
 	if err != nil {
@@ -37,9 +42,9 @@ func login(c *fiber.Ctx) error {
 }
 
 func register(c *fiber.Ctx) error {
-	req, err := helper.ParseAndValidate[registerRequest](c)
-	if err != nil {
-		return err
+	req, ev := helper.ParseAndValidate[registerRequest](c)
+	if ev != nil {
+		return response.ErrorValidation(c, ev)
 	}
 
 	u := new(model.User)

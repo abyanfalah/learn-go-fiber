@@ -17,12 +17,12 @@ func getAll(c *fiber.Ctx) error {
 }
 
 func create(c *fiber.Ctx) error {
-	req, err := helper.ParseAndValidate[createRequest](c)
-	if err != nil {
-		return fiber.DefaultErrorHandler(c, err)
+	req, ve := helper.ParseAndValidate[createRequest](c)
+	if ve != nil {
+		return ve
 	}
 
-	err = IsUsedEmail(req.Email)
+	err := IsUsedEmail(req.Email)
 	if err != nil {
 		return fiber.DefaultErrorHandler(c, err)
 	}
@@ -57,7 +57,7 @@ func update(c *fiber.Ctx) error {
 	}
 
 	if user.Email != req.Email {
-		err = IsUsedEmail(req.Email)
+		err := IsUsedEmail(req.Email)
 		if err != nil {
 			return fiber.DefaultErrorHandler(c, err)
 		}

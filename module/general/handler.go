@@ -2,6 +2,7 @@ package general
 
 import (
 	"learn-fiber/core/config/db"
+	"learn-fiber/core/helper"
 	"learn-fiber/core/helper/generator"
 	"learn-fiber/core/http/response"
 	"learn-fiber/model"
@@ -10,13 +11,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type orang struct {
-	Name string `json:"name"`
-	Age  int    `json:"age"`
-}
+// type orang struct {
+// 	Name string `json:"name"`
+// 	Age  int    `json:"age"`
+// }
 
 func test(c *fiber.Ctx) error {
-	return response.Body(c, "ok")
+	return response.Success(c)
 }
 
 func testProtected(c *fiber.Ctx) error {
@@ -24,11 +25,12 @@ func testProtected(c *fiber.Ctx) error {
 }
 
 func testWithPayload(c *fiber.Ctx) error {
-	o := new(orang)
-	o.Age = 10
-	o.Name = "ohang"
+	req, ev := helper.ParseAndValidate[testRequest](c)
+	if ev != nil {
+		return response.ErrorValidation(c, ev)
+	}
 
-	return response.Body(c, o)
+	return response.Body(c, req)
 }
 
 func createUser(c *fiber.Ctx) error {

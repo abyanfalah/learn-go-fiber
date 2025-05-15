@@ -1,6 +1,10 @@
 package response
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"learn-fiber/core/exception"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 func SuccessWithMessage(c *fiber.Ctx, msg string) error {
 	return c.JSON(fiber.Map{
@@ -18,7 +22,7 @@ func Body(c *fiber.Ctx, data any) error {
 
 func InvalidPayload(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-		"error": "Invalid JSON",
+		"error": "Invalid payload",
 	})
 }
 
@@ -26,4 +30,8 @@ func InvalidCredentials(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 		"error": "Invalid credentials",
 	})
+}
+
+func ErrorValidation(c *fiber.Ctx, ev *exception.ErrValidation) error {
+	return c.Status(fiber.StatusBadRequest).JSON(ev)
 }
