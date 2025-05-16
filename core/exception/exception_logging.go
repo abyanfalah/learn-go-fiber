@@ -25,14 +25,13 @@ func logError(e error) {
 	}
 
 	msg := e
-	_, location := getCallerAndLocation(callerPositionSkip)
+	caller, _ := getCallerAndLocation(callerPositionSkip)
 	log.Printf(`"%s"`, msg)
 	// fmt.Printf("%-14s: %s\n", "Caller", caller)
-	fmt.Printf("%-14s: %s\n", "Location", location)
+	fmt.Printf("%-14s: %s\n", "Location", caller)
 	fmt.Printf("%-14s: %s\n", "Message", msg)
-	fmt.Printf("%-14s:\n", "Stacktrace")
+	fmt.Printf("%-14s: %s\n", "Stacktrace", "↴")
 	printRelevantStack(se.Stack)
-	fmt.Println()
 }
 
 func (e *StackError) Error() string {
@@ -72,6 +71,6 @@ func getCallerAndLocation(skip int) (string, string) {
 }
 
 func isRelevantStacktrace(path []byte) bool {
-	isRelevant := bytes.Contains(path, config.GetProjectRoot()) && !bytes.Contains(path, config.GetErrorLoggingPath())
+	isRelevant := bytes.Contains(path, config.GetProjectRoot()) && !bytes.Contains(path, config.GetCoreExceptionPath())
 	return isRelevant
 }

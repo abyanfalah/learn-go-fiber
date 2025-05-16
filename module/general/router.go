@@ -8,6 +8,7 @@ import (
 
 func SetupRoutes(r fiber.Router) {
 	r.Get("", test)
+	r.Get("error", testError)
 	r.Get("protected", mdw.AuthCookieMiddleware(), testProtected)
 	r.Post("", testWithPayload)
 	r.Get("user-dummy", createUser)

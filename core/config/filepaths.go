@@ -7,13 +7,13 @@ import (
 )
 
 var projectRoot []byte
-var errorLoggingPath []byte
+var coreExceptionPath []byte
 var IsRelevantLoggingPath bool
 
 // todo: find reliable way to retrieve project root. os.getwd can still go wrong
 func init() {
 	setProjectRoot()
-	setErrorLoggingPath()
+	setCoreExceptionPath()
 }
 
 func setProjectRoot() {
@@ -24,9 +24,9 @@ func setProjectRoot() {
 	}
 }
 
-func setErrorLoggingPath() {
+func setCoreExceptionPath() {
 	if wd, err := os.Getwd(); err == nil {
-		errorLoggingPath = fmt.Appendf(nil, "%s/%s", wd, "core/exception")
+		coreExceptionPath = fmt.Appendf(nil, "%s/%s", wd, "core/exception")
 	} else {
 		log.Fatalf("Failed to get error logging path: %v", err)
 	}
@@ -40,10 +40,10 @@ func GetProjectRoot() []byte {
 
 	return projectRoot
 }
-func GetErrorLoggingPath() []byte {
-	if errorLoggingPath == nil {
+func GetCoreExceptionPath() []byte {
+	if coreExceptionPath == nil {
 		log.Fatalf("Error logging path not set")
 		return nil
 	}
-	return errorLoggingPath
+	return coreExceptionPath
 }

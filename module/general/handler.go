@@ -1,7 +1,9 @@
 package general
 
 import (
+	"errors"
 	"learn-fiber/core/config/db"
+	"learn-fiber/core/exception"
 	"learn-fiber/core/helper"
 	"learn-fiber/core/helper/generator"
 	"learn-fiber/core/http/response"
@@ -18,6 +20,11 @@ import (
 
 func test(c *fiber.Ctx) error {
 	return response.Success(c)
+}
+
+func testError(c *fiber.Ctx) error {
+	err := errors.New("this is an error")
+	return exception.Handle(err)
 }
 
 func testProtected(c *fiber.Ctx) error {

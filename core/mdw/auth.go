@@ -14,6 +14,7 @@ import (
 var isWhiteListedPath = map[string]bool{
 	"/":                  true,
 	"/api":               true,
+	"/api/error":         true,
 	"/api/auth/login":    true,
 	"/api/auth/register": true,
 }
