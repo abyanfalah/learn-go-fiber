@@ -26,12 +26,14 @@ func logError(e error) {
 
 	msg := e
 	caller, _ := getCallerAndLocation(callerPositionSkip)
-	log.Printf(`"%s"`, msg)
+	fmt.Println()
+	log.Printf(`an error occured: "%s"`, msg)
 	// fmt.Printf("%-14s: %s\n", "Caller", caller)
 	fmt.Printf("%-14s: %s\n", "Location", caller)
 	fmt.Printf("%-14s: %s\n", "Message", msg)
 	fmt.Printf("%-14s: %s\n", "Stacktrace", "↴")
 	printRelevantStack(se.Stack)
+	fmt.Println()
 }
 
 func (e *StackError) Error() string {
