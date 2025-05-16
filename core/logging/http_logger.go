@@ -29,8 +29,7 @@ import (
 // }
 
 func HttpLogger(c *fiber.Ctx) error {
-	// fmt.Printf("%s %s\n", c.Method(), c.OriginalURL())
-	//
+	fmt.Println()
 	log.Println("=== HTTP REQUEST ===")
 	fmt.Printf("%-14s: %s\n", "Method", c.Method())
 	fmt.Printf("%-14s: %s\n", "Path", c.Path())
